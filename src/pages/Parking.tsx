@@ -63,7 +63,7 @@ const Parking = () => {
     setLoading(false);
   };
 
-  const parkingSlots: ParkingSlot[] = Array.from({ length: 50 }, (_, index) => ({
+  const parkingSlots: ParkingSlot[] = Array.from({ length: 100 }, (_, index) => ({
     id: index + 1,
     isAvailable: Math.random() > 0.3, // 70% chance of being available
   }));
@@ -75,7 +75,7 @@ const Parking = () => {
   if (selectedSpace) {
     return (
       <div className="min-h-screen bg-background p-4">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold">{selectedSpace.name}</h1>
@@ -99,8 +99,8 @@ const Parking = () => {
                   {/* Row of parking slots */}
                   <div className="flex gap-6">
                     {/* Left section */}
-                    <div className="grid grid-cols-5 gap-2">
-                      {parkingSlots.slice(row * 10, row * 10 + 5).map((slot) => (
+                    <div className="grid grid-cols-10 gap-2">
+                      {parkingSlots.slice(row * 20, row * 20 + 10).map((slot) => (
                         <button
                           key={slot.id}
                           onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
@@ -132,8 +132,8 @@ const Parking = () => {
                     </div>
 
                     {/* Right section */}
-                    <div className="grid grid-cols-5 gap-2">
-                      {parkingSlots.slice(row * 10 + 5, (row + 1) * 10).map((slot) => (
+                    <div className="grid grid-cols-10 gap-2">
+                      {parkingSlots.slice(row * 20 + 10, (row + 1) * 20).map((slot) => (
                         <button
                           key={slot.id}
                           onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
