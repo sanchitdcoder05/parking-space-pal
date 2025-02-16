@@ -1,13 +1,26 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin, Navigation, Square, CheckSquare } from "lucide-react";
+
+interface ParkingSpace {
+  name: string;
+  distance: string;
+  availableSpots: number;
+  totalSpots: number;
+}
+
+interface ParkingSlot {
+  id: number;
+  isAvailable: boolean;
+}
 
 const Parking = () => {
   const [locationPermission, setLocationPermission] = useState<boolean | null>(null);
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
+  const [selectedSpace, setSelectedSpace] = useState<ParkingSpace | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
 
   const requestLocation = async () => {
     try {
@@ -40,15 +53,95 @@ const Parking = () => {
   };
 
   const loadParkingSpaces = () => {
-    // Simulate loading parking spaces
     setTimeout(() => {
       setLoading(false);
     }, 1500);
   };
 
+  const handleReserve = (space: ParkingSpace) => {
+    setSelectedSpace(space);
+    setLoading(false);
+  };
+
+  const parkingSlots: ParkingSlot[] = Array.from({ length: 50 }, (_, index) => ({
+    id: index + 1,
+    isAvailable: Math.random() > 0.3, // 70% chance of being available
+  }));
+
   useEffect(() => {
     requestLocation();
   }, []);
+
+  if (selectedSpace) {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">{selectedSpace.name}</h1>
+              <p className="text-muted-foreground">Select an available parking slot</p>
+            </div>
+            <Button variant="outline" onClick={() => setSelectedSpace(null)}>
+              Back to List
+            </Button>
+          </div>
+
+          <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="grid grid-cols-10 gap-2 mb-6">
+              {parkingSlots.map((slot) => (
+                <button
+                  key={slot.id}
+                  onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
+                  className={`
+                    p-2 rounded-md transition-all duration-200
+                    ${slot.isAvailable 
+                      ? 'hover:bg-primary/20 ' + (selectedSlot === slot.id ? 'bg-primary/20' : 'bg-primary/5')
+                      : 'bg-gray-200 cursor-not-allowed'}
+                  `}
+                  disabled={!slot.isAvailable}
+                >
+                  {slot.isAvailable ? (
+                    <CheckSquare 
+                      className={`w-6 h-6 ${selectedSlot === slot.id ? 'text-primary' : 'text-primary/40'}`}
+                    />
+                  ) : (
+                    <Square className="w-6 h-6 text-gray-400" />
+                  )}
+                  <span className="text-xs mt-1 block">
+                    {slot.id}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center justify-between border-t pt-4">
+              <div className="flex gap-4">
+                <div className="flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-primary/40" />
+                  <span className="text-sm">Available</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Square className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm">Occupied</span>
+                </div>
+              </div>
+              <Button 
+                disabled={!selectedSlot}
+                onClick={() => {
+                  toast({
+                    title: "Slot Selected",
+                    description: `You selected parking slot #${selectedSlot}`,
+                  });
+                }}
+              >
+                Confirm Selection
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (locationPermission === false) {
     return (
@@ -118,7 +211,12 @@ const Parking = () => {
                     <span>{space.totalSpots} total</span>
                   </div>
                 </div>
-                <Button className="w-full mt-4">Reserve Spot</Button>
+                <Button 
+                  className="w-full mt-4"
+                  onClick={() => handleReserve(space)}
+                >
+                  Reserve Spot
+                </Button>
               </div>
             ))}
           </div>
