@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -94,69 +93,79 @@ const Parking = () => {
             </div>
 
             {/* Parking layout with roads */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               {[0, 1, 2, 3, 4].map((row) => (
-                <div key={row} className="flex gap-6">
-                  {/* Left section */}
-                  <div className="grid grid-cols-5 gap-2">
-                    {parkingSlots.slice(row * 10, row * 10 + 5).map((slot) => (
-                      <button
-                        key={slot.id}
-                        onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
-                        className={`
-                          p-2 rounded-md transition-all duration-200
-                          ${slot.isAvailable 
-                            ? 'hover:bg-primary/20 ' + (selectedSlot === slot.id ? 'bg-primary/20' : 'bg-primary/5')
-                            : 'bg-gray-200 cursor-not-allowed'}
-                        `}
-                        disabled={!slot.isAvailable}
-                      >
-                        {slot.isAvailable ? (
-                          <CheckSquare 
-                            className={`w-6 h-6 ${selectedSlot === slot.id ? 'text-primary' : 'text-primary/40'}`}
-                          />
-                        ) : (
-                          <Square className="w-6 h-6 text-gray-400" />
-                        )}
-                        <span className="text-xs mt-1 block">
-                          {slot.id}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
+                <div key={row} className="space-y-4">
+                  {/* Row of parking slots */}
+                  <div className="flex gap-6">
+                    {/* Left section */}
+                    <div className="grid grid-cols-5 gap-2">
+                      {parkingSlots.slice(row * 10, row * 10 + 5).map((slot) => (
+                        <button
+                          key={slot.id}
+                          onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
+                          className={`
+                            p-2 rounded-md transition-all duration-200
+                            ${slot.isAvailable 
+                              ? 'hover:bg-primary/20 ' + (selectedSlot === slot.id ? 'bg-primary/20' : 'bg-primary/5')
+                              : 'bg-gray-200 cursor-not-allowed'}
+                          `}
+                          disabled={!slot.isAvailable}
+                        >
+                          {slot.isAvailable ? (
+                            <CheckSquare 
+                              className={`w-6 h-6 ${selectedSlot === slot.id ? 'text-primary' : 'text-primary/40'}`}
+                            />
+                          ) : (
+                            <Square className="w-6 h-6 text-gray-400" />
+                          )}
+                          <span className="text-xs mt-1 block">
+                            {slot.id}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
 
-                  {/* Center road */}
-                  <div className="w-8 bg-gray-200 rounded-md flex items-center justify-center text-xs text-gray-600 rotate-180" style={{ writingMode: 'vertical-rl' }}>
-                    Lane {row + 1}
-                  </div>
+                    {/* Center road */}
+                    <div className="w-8 bg-gray-200 rounded-md flex items-center justify-center text-xs text-gray-600 rotate-180" style={{ writingMode: 'vertical-rl' }}>
+                      Lane {row + 1}
+                    </div>
 
-                  {/* Right section */}
-                  <div className="grid grid-cols-5 gap-2">
-                    {parkingSlots.slice(row * 10 + 5, (row + 1) * 10).map((slot) => (
-                      <button
-                        key={slot.id}
-                        onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
-                        className={`
-                          p-2 rounded-md transition-all duration-200
-                          ${slot.isAvailable 
-                            ? 'hover:bg-primary/20 ' + (selectedSlot === slot.id ? 'bg-primary/20' : 'bg-primary/5')
-                            : 'bg-gray-200 cursor-not-allowed'}
-                        `}
-                        disabled={!slot.isAvailable}
-                      >
-                        {slot.isAvailable ? (
-                          <CheckSquare 
-                            className={`w-6 h-6 ${selectedSlot === slot.id ? 'text-primary' : 'text-primary/40'}`}
-                          />
-                        ) : (
-                          <Square className="w-6 h-6 text-gray-400" />
-                        )}
-                        <span className="text-xs mt-1 block">
-                          {slot.id}
-                        </span>
-                      </button>
-                    ))}
+                    {/* Right section */}
+                    <div className="grid grid-cols-5 gap-2">
+                      {parkingSlots.slice(row * 10 + 5, (row + 1) * 10).map((slot) => (
+                        <button
+                          key={slot.id}
+                          onClick={() => slot.isAvailable && setSelectedSlot(slot.id)}
+                          className={`
+                            p-2 rounded-md transition-all duration-200
+                            ${slot.isAvailable 
+                              ? 'hover:bg-primary/20 ' + (selectedSlot === slot.id ? 'bg-primary/20' : 'bg-primary/5')
+                              : 'bg-gray-200 cursor-not-allowed'}
+                          `}
+                          disabled={!slot.isAvailable}
+                        >
+                          {slot.isAvailable ? (
+                            <CheckSquare 
+                              className={`w-6 h-6 ${selectedSlot === slot.id ? 'text-primary' : 'text-primary/40'}`}
+                            />
+                          ) : (
+                            <Square className="w-6 h-6 text-gray-400" />
+                          )}
+                          <span className="text-xs mt-1 block">
+                            {slot.id}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                  
+                  {/* Horizontal road after each row except the last */}
+                  {row < 4 && (
+                    <div className="h-6 bg-gray-200 rounded-md flex items-center justify-center text-xs text-gray-600">
+                      Connecting Road {row + 1}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
